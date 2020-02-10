@@ -14,14 +14,14 @@
      publisher(topic varchar(100), socket_id varchar(100))
      subscriber(topic varchar(100), socket_id varchar(100))
 
-**1. Publisher to Subscriber using Broker (3 Subscriber and 1 Publisher)**
+**1. Publisher to Subscribers using Broker (i.e. 3 Subscriber and 1 Publisher)**
  - $ python broker.py
  - $ python sub.py 1
  - $ python sub.py 1
  - $ python sub.py 1
  - $ python pub.py 1
 
-**2. Directly from Publisher to Subscriber (3 Subscriber and 1 Publisher)**
+**2. Directly from Publisher to Subscribers (i.e. 3 Subscriber and 1 Publisher)**
  - $ python broker.py
  - $ python sub.py D
  - $ python sub.py D
