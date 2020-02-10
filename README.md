@@ -1,4 +1,4 @@
-# Vanderbilt University
+* Vanderbilt University
 # 2020 Distributed Systems Principles(CS6381)
 # Assignment1 : Pub/Sub Model Implementation using ZeroMQ
 
