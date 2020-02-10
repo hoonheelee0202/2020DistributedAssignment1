@@ -1,7 +1,10 @@
-# 2020 Distributed Systems : Assignment1 - Vanderbilt University
+# Vanderbilt University
+# 2020 Distributed Systems Principles(CS6381)
+# Assignment1 : Pub/Sub Model Implementation using ZeroMQ
 
 # System Diagram
 ![SystemDiagram](Assignment1.png)
+
 # How to Execute
 0. Prerequirement
  - Mysql Database
