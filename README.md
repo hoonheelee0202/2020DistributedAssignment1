@@ -1,4 +1,5 @@
-# 2020DistributedAssignment1 - Vanderbilt University
+# 2020 Distributed Systems : Assignment1 - Vanderbilt University
+
 # System Diagram
 ![SystemDiagram](Assignment1.png)
 # How to Execute
