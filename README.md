@@ -1,6 +1,6 @@
 # 2020DistributedAssignment1 - Vanderbilt University
 # System Diagram
-
+![SystemDiagram](Assignment1.png)
 # How to Execute
 1. Publisher to Subscriber using Broker(3 Subscriber and 1 Publisher)
  - $ python broker.py
