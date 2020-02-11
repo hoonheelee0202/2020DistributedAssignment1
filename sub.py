@@ -20,15 +20,17 @@ import argparse   # argument parser
 ##################################
 def parseCmdLineArgs ():
     # parse the command line
-    parser = argparse.ArgumentParser ()
+	parser = argparse.ArgumentParser ()
 
     # add positional arguments in that order
-    parser.add_argument ("mode", help="1:Just Register the subscriber, 2:Register the subscriber and start listeng to the topic")
+	parser.add_argument ("mode", help="1:Just Register the subscriber, 2:Register the subscriber and start listeng to the topic")
+	parser.add_argument ("ipaddress")
+	parser.add_argument ("portnumber")
 
     # parse the args
-    args = parser.parse_args ()
+	args = parser.parse_args ()
 
-    return args
+	return args
 
 
 def main():
@@ -45,8 +47,14 @@ def main():
 	topic = random.choice([b"sports", b"music", b"weather"])
 	print "Process ID:"+pid_str+", Interested Topic : "+topic
 
+	#brokeraddressIP = raw_input("Enter the broker's IP address(e.g. 10.0.2.15) : ") 
+	#brokeraddressPort = raw_input("Enter the broker's PORT address(e.g. 5559) : ") 
+	brokeraddressIP = parsed_args.ipaddress
+	brokeraddressPort = parsed_args.portnumber
+	brokeraddress = "tcp://"+brokeraddressIP+":"+brokeraddressPort
+
 	# register the subscriber to the broker
-	result = register_sub(topic,pid_str)
+	result = register_sub(topic,pid_str,brokeraddress)
 
 	
 	if parsed_args.mode=="D": # Directly receive the messages from the publishers
@@ -64,7 +72,7 @@ def main():
 	#if parsed_args.mode<>"D":
 	else: # if argument is not 'D' then start waiting for the published contents
 		pid_str = "Wait"+pid_str # make the socket identification by adding "Wait" to the front of the process id
-		connect(pid_str) # connect the Broker
+		connect(pid_str, brokeraddress) # connect to the Broker
 
 		while True:
 			message = wait_for_published_topic()

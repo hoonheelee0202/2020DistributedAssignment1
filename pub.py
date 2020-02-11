@@ -20,15 +20,17 @@ search_list = [] # topic, pid
 ##################################
 def parseCmdLineArgs ():
     # parse the command line
-    parser = argparse.ArgumentParser ()
+	parser = argparse.ArgumentParser ()
 
     # add positional arguments in that order
-    parser.add_argument ("mode", help="D:Directly send the contents to the subscriber, 2:Send the contents to the broker")
+	parser.add_argument ("mode", help="D:Directly send the contents to the subscriber, 2:Send the contents to the broker")
+	parser.add_argument ("ipaddress")
+	parser.add_argument ("portnumber")
 
     # parse the args
-    args = parser.parse_args ()
+	args = parser.parse_args ()
 
-    return args
+	return args
 
 def main():
 	# Initialize the search_list
@@ -49,6 +51,12 @@ def main():
 	print "Process ID:"+pid_str
 
 	first_flag=True
+
+	#brokeraddressIP = raw_input("Enter the broker's IP address(e.g. 10.0.2.15) : ") 
+	#brokeraddressPort = raw_input("Enter the broker's PORT address(e.g. 5559) : ") 
+	brokeraddressIP = parsed_args.ipaddress
+	brokeraddressPort = parsed_args.portnumber
+	brokeraddress = "tcp://"+brokeraddressIP+":"+brokeraddressPort
 
 	# Topic is randomly chosen
 	###topic = random.choice([b"sports", b"music", b"weather"])
@@ -73,7 +81,7 @@ def main():
 			contents = raw_input("Enter the contents : ")
 
 			if first_flag == True:
-				register_pub(topic,pid_str) # Register the publisher to the broker
+				register_pub(topic,pid_str,brokeraddress) # Register the publisher to the broker
 				first_flag = False
 			
 			mydb = db_connect()
@@ -92,14 +100,17 @@ def main():
 			# send the return Messages to the subscribers
 			for i in range(len(search_list)):
 				connect_address ="tcp://localhost:"+search_list[i][1]
+				connect_address ="tcp://"+brokeraddressIP+":"+search_list[i][1]
 				print "connect_address: "+connect_address
 				socket = context.socket(zmq.REQ)
 				socket.connect(connect_address)		
 				#return_socket_id = "Wait"+search_list[i][1]
 				
+				start_time = time.time ()
 				socket.send(contents.encode())
 				message = socket.recv()
-				print "Returned message: "+message
+				end_time = time.time()
+				print "Returned message: "+message+", Elapsed Time: "+str(end_time-start_time)
 				socket.close()
 			
 			# Initialize the search_list
@@ -114,11 +125,14 @@ def main():
 			contents = raw_input("Enter the contents : ")
 
 			if first_flag == True:
-				register_pub(topic,pid_str) # Register the publisher to the broker
+				register_pub(topic,pid_str, brokeraddress) # Register the publisher to the broker
 				first_flag = False
 
 			print "\n\nPublish the contents to the subscribers\n"
-			publish(topic,pid_str,contents)
+			start_time = time.time ()
+			message = publish(topic,pid_str,contents)
+			end_time = time.time()
+			print "Returned message: "+message[0]+", Elapsed Time: "+str(end_time-start_time)
 
 if __name__ == "__main__":
 	main()

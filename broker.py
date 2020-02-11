@@ -11,6 +11,18 @@ publisher = [] # topic, pid
 subscriber = [] # topic, pid
 search_list = [] # topic, pid
 
+#--------------------------------------------------------------------
+# Append the publisher to the list 'publisher'
+# register_pub(topic,socket_id)
+def append_publisher(topic,socket_id):
+	publisher.append([topic,socket_id])
+
+#--------------------------------------------------------------------
+# Append the Subscriber to the list 'subscriber'
+# register_sub(topic,socket_id)
+def append_subscriber(topic,socket_id):
+	subscriber.append([topic,socket_id])
+
 def main():
 	print "Broker started.."
 

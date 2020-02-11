@@ -3,13 +3,14 @@ import sys
 import zmq
 import time
 import pymysql.cursors
+#import mysql.connector
 
 """ Global Variables for Main Program """
 # Prepare our context and sockets
 #context = zmq.Context()
 #frontend = context.socket(zmq.ROUTER)
 
-BrokerAddress = "tcp://localhost:5559"
+#BrokerAddress = "tcp://localhost:5559"
 context1 = zmq.Context()
 socket1 = context1.socket(zmq.REQ)
 context2 = zmq.Context()
@@ -18,9 +19,9 @@ socket2 = context2.socket(zmq.DEALER)
 #--------------------------------------------------------------------
 # register the publisher function
 # register_pub(topic,socket_id)
-def register_pub(topic,socket_id):
+def register_pub(topic,socket_id,brokeraddress):
 	socket1.setsockopt(zmq.IDENTITY, socket_id.encode()) # set the id of the socket
-	socket1.connect(BrokerAddress) # connect
+	socket1.connect(brokeraddress) # connect
 	# send the msg to the broker("1" is for the registering the publisher
 	socket1.send_multipart([b"1",socket_id.encode(),topic.encode()])
 	result = socket1.recv_multipart()
@@ -30,15 +31,16 @@ def register_pub(topic,socket_id):
 # publish(topic, socket_id):
 def publish(topic,socket_id,contents):
 	socket1.send_multipart([b"3",socket_id.encode(),topic.encode(),contents.encode()])
-	socket1.recv_multipart()
-	
+	message = socket1.recv_multipart()
+	#print message
+	return message
 
 #--------------------------------------------------------------------
 # register the subscriber function
 # register_sub(topic,socket_id)
-def register_sub(topic,socket_id):
+def register_sub(topic,socket_id,brokeraddress):
 	socket1.setsockopt(zmq.IDENTITY, socket_id.encode()) # set the id of the socket
-	socket1.connect(BrokerAddress) # connect
+	socket1.connect(brokeraddress) # connect
 
 	# send the msg to the broker("2" is for the registering the subscriber
 	socket1.send_multipart([b"2",socket_id.encode(),topic.encode()])
@@ -48,19 +50,19 @@ def register_sub(topic,socket_id):
 #--------------------------------------------------------------------
 # Make the connection to the router as a DEALER
 # connect(socket_id)
-def connect(socket_id):
+def connect(socket_id,brokeraddress):
 	socket2.setsockopt(zmq.IDENTITY, socket_id.encode())  # set the id of the socket
 	print "Connect to the broker with the Socket_ID("+socket_id+")"
-	socket2.connect(BrokerAddress) # connect
+	socket2.connect(brokeraddress) # connect
 
 #--------------------------------------------------------------------
 # The subscribers wait for the topic to be published
 # wait_for_published_topic(topic,socket_id)
 def wait_for_published_topic():
 	# Wait for the published topic
-	message = socket2.recv_multipart()
+	result = socket2.recv_multipart()
 	
-	return message
+	return result
 
 #--------------------------------------------------------------------
 # Database Connection
@@ -69,6 +71,7 @@ def db_connect():
 	print("db connection started..")
 	# Database Connect
 	mydb = pymysql.connect(
+	#mydb = mysql.connector.connect(
 		host="localhost",
 		user="lhh",
 		passwd="1234",
