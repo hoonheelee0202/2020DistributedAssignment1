@@ -67,7 +67,6 @@ def main():
 	if parsed_args.mode == "D":
 		print "Directly send the contents to Subscribers without going through broker"
 		
-
 		while True:
 
 			topic = raw_input("Enter the topic : ") 
@@ -109,6 +108,7 @@ def main():
 			mydb.close()
 
 	else:
+		# send the contents to Subscribers using the Broker
 		while True:
 			topic = raw_input("Enter the topic : ") 
 			contents = raw_input("Enter the contents : ")

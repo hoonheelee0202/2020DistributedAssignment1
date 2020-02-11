@@ -63,7 +63,7 @@ def main():
 
 	#if parsed_args.mode<>"D":
 	else: # if argument is not 'D' then start waiting for the published contents
-		pid_str = "Wait"+pid_str
+		pid_str = "Wait"+pid_str # make the socket identification by adding "Wait" to the front of the process id
 		connect(pid_str) # connect the Broker
 
 		while True:

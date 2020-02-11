@@ -11,28 +11,6 @@ publisher = [] # topic, pid
 subscriber = [] # topic, pid
 search_list = [] # topic, pid
 
-
-
-#--------------------------------------------------------------------
-# Append the publisher to the list 'publisher'
-# register_pub(topic,socket_id)
-def append_publisher(topic,socket_id):
-	publisher.append([topic,socket_id])
-
-#--------------------------------------------------------------------
-# Append the Subscriber to the list 'subscriber'
-# register_sub(topic,socket_id)
-def append_subscriber(topic,socket_id):
-	subscriber.append([topic,socket_id])
-
-def find_brute(list, topic):
-	result = []
-	for index, sublist in enumerate(list):
-		if sublist[0] == topic:
-			result.append(index);
-
-	return result
-
 def main():
 	print "Broker started.."
 
@@ -72,7 +50,7 @@ def main():
 
 			print "Received msg_type: "+message_type+", socket_id: "+socket_id+", topic: "+topic
 			
-			if message_type == "1" : # request the register the publisher
+			if message_type == "1" : # request to register the publisher
 				append_publisher(topic, socket_id)
 				# DB Insert to the table 'publisher'
 				sql = "INSERT INTO publisher VALUES (%s, %s)"
@@ -84,9 +62,9 @@ def main():
 				#print "SQL execution: "+sql
 				# send bakc the reply
 				frontend.send_multipart([socket_id.encode(),"",b"Thank you 1"])
-			elif message_type == "2" :
+			elif message_type == "2" :  # request to register the subscriber
 				append_subscriber(topic, socket_id)
-				# DB Insert to the table 'publisher'
+				# DB Insert to the table 'subscriber'
 				mycursor = mydb.cursor()
 				sql = "INSERT INTO subscriber VALUES (%s, %s)"
 				val = (topic, socket_id)
@@ -107,15 +85,14 @@ def main():
 				myresult = mycursor.fetchall()
 				
 				#print "Len of myresult"+str(len(myresult))
-				if len(myresult)<>0 : 	
+				if len(myresult)<>0 : # Add the searched DB result to the search_list
 					for x in myresult:
 						search_list.append([x[0],x[1]])
 					contents = message[5]
 
-
 					# send the return Messages to the subscribers
 					for i in range(len(search_list)):
-						return_socket_id = "Wait"+search_list[i][1]
+						return_socket_id = "Wait"+search_list[i][1] #Make the socket_id by adding "Wait" to the front
 						print "return topic: "+topic+", return socket: "+return_socket_id 
 						frontend.send_multipart([return_socket_id.encode(),"",contents.encode()])
 						frontend.send_multipart([socket_id.encode(),"",b"Thank you 3"])
