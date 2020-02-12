@@ -12,7 +12,9 @@
   - Database Name : pubsub
   - Table Information
      publisher(topic varchar(100), socket_id varchar(100))
+        -- create table publisher(topic varchar(100), socket_id varchar(100));
      subscriber(topic varchar(100), socket_id varchar(100))
+        -- create table subscriber(topic varchar(100), socket_id varchar(100));
 
 **1. Publisher to Subscribers using Broker (i.e. 3 Subscriber and 1 Publisher)**
 * broker's IP address and Port number are required
