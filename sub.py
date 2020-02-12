@@ -34,7 +34,7 @@ def parseCmdLineArgs ():
 
 
 def main():
-	print "Subscriber Main Function started.."
+	print("Subscriber Main Function started..")
 
 	# first parse the command line arguments
 	parsed_args = parseCmdLineArgs ()
@@ -44,8 +44,8 @@ def main():
 	pid_str = str(pid)
 
 	# Topic is randomly chosen
-	topic = random.choice([b"sports", b"music", b"weather"])
-	print "Process ID:"+pid_str+", Interested Topic : "+topic
+	topic = random.choice(["sports", "music", "weather"])
+	print("Process ID:"+pid_str+", Interested Topic : "+topic)
 
 	#brokeraddressIP = raw_input("Enter the broker's IP address(e.g. 10.0.2.15) : ") 
 	#brokeraddressPort = raw_input("Enter the broker's PORT address(e.g. 5559) : ") 
@@ -54,9 +54,11 @@ def main():
 	brokeraddress = "tcp://"+brokeraddressIP+":"+brokeraddressPort
 
 	# register the subscriber to the broker
-	result = register_sub(topic,pid_str,brokeraddress)
+	#print("Register Subscriber(topic: "+str(topic)+", process id: "+pid_str+", brokeraddress: "+brokeraddress+")")
+	#result = register_sub(topic,pid_str,brokeraddress)
+	register_sub(topic,pid_str,brokeraddress)
+	#print("Register Subscriber ended")
 
-	
 	if parsed_args.mode=="D": # Directly receive the messages from the publishers
 		context = zmq.Context()
 		socket = context.socket(zmq.REP)
@@ -64,19 +66,20 @@ def main():
 		socket.bind(bind_address)
 
 		while True:
-			print "\nWait on  socket.recv_multipart()"
+			print("\nWait on  socket.recv_multipart()")
 			message = socket.recv()
-			print "Directly received message: "+message
+			print("Directly received message: "+message.decode())
 			socket.send(b"Thank you publisher")
 
 	#if parsed_args.mode<>"D":
 	else: # if argument is not 'D' then start waiting for the published contents
 		pid_str = "Wait"+pid_str # make the socket identification by adding "Wait" to the front of the process id
+		#print("connect to the broker: "+brokeraddress)
 		connect(pid_str, brokeraddress) # connect to the Broker
 
 		while True:
 			message = wait_for_published_topic()
-			print "Published Contents: "+str(message[1])
+			print("Published Contents: "+str(message[1]))
 
 
 if __name__ == "__main__":

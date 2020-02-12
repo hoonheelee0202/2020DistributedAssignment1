@@ -26,6 +26,7 @@ def parseCmdLineArgs ():
 	parser.add_argument ("mode", help="D:Directly send the contents to the subscriber, 2:Send the contents to the broker")
 	parser.add_argument ("ipaddress")
 	parser.add_argument ("portnumber")
+	parser.add_argument ("auto")
 
     # parse the args
 	args = parser.parse_args ()
@@ -39,7 +40,7 @@ def main():
 	# Prepare our context and sockets
 	context = zmq.Context()
 
-	print "Publisher Main Function started.."
+	print("Publisher Main Function started..")
 
 	# first parse the command line arguments
 	parsed_args = parseCmdLineArgs ()
@@ -48,7 +49,7 @@ def main():
 	pid = os.getpid()
 	pid_str = str(pid)
 
-	print "Process ID:"+pid_str
+	print("Process ID:"+pid_str)
 
 	first_flag=True
 
@@ -58,13 +59,14 @@ def main():
 	brokeraddressPort = parsed_args.portnumber
 	brokeraddress = "tcp://"+brokeraddressIP+":"+brokeraddressPort
 
-	# Topic is randomly chosen
-	###topic = random.choice([b"sports", b"music", b"weather"])
-	###print "publishing Topic: "+topic
-	
-	# Contents is randomly chosen
-	###contents = random.choice([b"Good morning", b"Good Afternoon", b"Good Evening"])
-	###print "publishing Contents: "+contents
+	if parsed_args.auto == "Y":
+		# Topic is randomly chosen
+		topic = random.choice(["sports", "music", "weather"])
+		###print "publishing Topic: "+topic
+		
+		# Contents is randomly chosen
+		contents = random.choice(["Good morning", "Good Afternoon", "Good Evening"])
+		###print "publishing Contents: "+contents
 
 	
 	
@@ -73,12 +75,13 @@ def main():
 
 	# Publish the contents
 	if parsed_args.mode == "D":
-		print "Directly send the contents to Subscribers without going through broker"
+		print("Directly send the contents to Subscribers without going through broker")
 		
 		while True:
 
-			topic = raw_input("Enter the topic : ") 
-			contents = raw_input("Enter the contents : ")
+			if parsed_args.auto == "N":
+				topic = input("Enter the topic : ") 
+				contents = input("Enter the contents : ")
 
 			if first_flag == True:
 				register_pub(topic,pid_str,brokeraddress) # Register the publisher to the broker
@@ -87,21 +90,21 @@ def main():
 			mydb = db_connect()
 			mycursor = mydb.cursor()
 			sql = "SELECT * FROM subscriber WHERE topic='"+topic+"'"
-			print "SQL: "+sql
+			#print("SQL: "+sql)
 			mycursor.execute(sql)
 			myresult = mycursor.fetchall()
 			for x in myresult:
-				print x
+				#print(x)
 				search_list.append([x[0],x[1]])
 
-			print "search_list"
-			print search_list
+			#print("search_list")
+			#print(search_list)
 
 			# send the return Messages to the subscribers
 			for i in range(len(search_list)):
 				connect_address ="tcp://localhost:"+search_list[i][1]
 				connect_address ="tcp://"+brokeraddressIP+":"+search_list[i][1]
-				print "connect_address: "+connect_address
+				#print("connect_address: "+connect_address)
 				socket = context.socket(zmq.REQ)
 				socket.connect(connect_address)		
 				#return_socket_id = "Wait"+search_list[i][1]
@@ -110,7 +113,7 @@ def main():
 				socket.send(contents.encode())
 				message = socket.recv()
 				end_time = time.time()
-				print "Returned message: "+message+", Elapsed Time: "+str(end_time-start_time)
+				print("Returned message: "+message.decode()+", Elapsed Time: "+str(end_time-start_time))
 				socket.close()
 			
 			# Initialize the search_list
@@ -121,18 +124,19 @@ def main():
 	else:
 		# send the contents to Subscribers using the Broker
 		while True:
-			topic = raw_input("Enter the topic : ") 
-			contents = raw_input("Enter the contents : ")
+			if parsed_args.auto == "N":
+				topic = input("Enter the topic : ") 
+				contents = input("Enter the contents : ")
 
 			if first_flag == True:
 				register_pub(topic,pid_str, brokeraddress) # Register the publisher to the broker
 				first_flag = False
 
-			print "\n\nPublish the contents to the subscribers\n"
+			print("\n\nPublish the contents to the subscribers\n")
 			start_time = time.time ()
 			message = publish(topic,pid_str,contents)
 			end_time = time.time()
-			print "Returned message: "+message[0]+", Elapsed Time: "+str(end_time-start_time)
+			print("Returned message: "+message[0].decode()+", Elapsed Time: "+str(end_time-start_time))
 
 if __name__ == "__main__":
 	main()
