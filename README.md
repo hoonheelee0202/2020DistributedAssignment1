@@ -36,4 +36,4 @@
  - $ python pub.py D 127.0.1.1 5559 N
  
  ## Time measurement
-![SystemDiagram](SystemDiagramV2.png)
+![TimeMeasurement](time_measurement.png)
