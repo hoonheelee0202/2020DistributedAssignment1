@@ -34,3 +34,6 @@
  - $ python sub.py D 127.0.1.1 5559 N
  - $ python sub.py D 127.0.1.1 5559 N
  - $ python pub.py D 127.0.1.1 5559 N
+ 
+ ## Time measurement
+![SystemDiagram](SystemDiagramV2.png)
