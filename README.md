@@ -36,4 +36,8 @@
  - $ python pub.py D 127.0.1.1 5559 N
  
  ## Time measurement
-![TimeMeasurement](time_measurement.png)
+ * Broker Communication
+![TimeMeasurement](time_measurement1.png)
+
+ * Direct Communication
+![TimeMeasurement](time_measurement2.png)
