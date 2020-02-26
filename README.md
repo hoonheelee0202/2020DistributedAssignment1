@@ -35,6 +35,11 @@
  - $ python sub.py D 127.0.1.1 5559 N
  - $ python pub.py D 127.0.1.1 5559 N
  
+ 
+ ## Testing Environment
+  - Minimal 3 client Topology
+  ![Topology](Topology.png)
+  
  ## Time measurement
  * Broker Communication
 ![TimeMeasurement](Time_measurement1.png)
