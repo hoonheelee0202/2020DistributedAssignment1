@@ -37,7 +37,7 @@
  
  ## Time measurement
  * Broker Communication
-![TimeMeasurement](time_measurement1.png)
+![TimeMeasurement](Time_measurement1.png)
 
  * Direct Communication
-![TimeMeasurement](time_measurement2.png)
+![TimeMeasurement](Time_measurement2.png)
